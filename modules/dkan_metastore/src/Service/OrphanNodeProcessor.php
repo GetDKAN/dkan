@@ -82,7 +82,7 @@ class OrphanNodeProcessor implements ContainerInjectionInterface {
       ->accessCheck(FALSE)
       ->addTag('dkan_orphan_filter')
       ->condition('type', 'data')
-      ->condition('changed', $this->time->getCurrentTime() - $retain_seconds, '<')
+      ->condition('changed', $this->time->getCurrentTime() - $retain_seconds, '<=')
       ->execute();
     foreach ($nids as $nid) {
       $node_storage->load($nid)->delete();
