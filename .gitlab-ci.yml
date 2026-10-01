@@ -30,3 +30,11 @@ variables:
   DRUPAL_ROOT: '$CI_PROJECT_DIR/$_WEB_ROOT'
   _CSPELL_WORDS: 'dcat'
   _CSPELL_IGNORE_PATHS: 'schema'
+
+.enable-mysql-local-infile: &enable-mysql-local-infile
+  before_script:
+    - mysql -h database -u root -p"$MYSQL_ROOT_PASSWORD" -e "SET GLOBAL local_infile = 1;"
+    - mysql -h database -u root -p"$MYSQL_ROOT_PASSWORD" -e "SHOW GLOBAL VARIABLES LIKE 'local_infile';"
+
+phpunit:
+  <<: *enable-mysql-local-infile
