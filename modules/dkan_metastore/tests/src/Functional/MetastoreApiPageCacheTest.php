@@ -135,7 +135,7 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
 
     // Get the variants of the import endpoint.
     $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier, ['show-reference-ids' => TRUE]);
-    $dataset = json_decode($response->getBody()->getContents());
+    $dataset = json_decode((string) $response->getBody());
     $distributionId = $dataset->distribution[0]->identifier ?? '';
     $resourceId = $dataset->distribution[0]->data->{'%Ref:downloadURL'}[0]->identifier ?? '';
     $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $distributionId);
@@ -173,7 +173,7 @@ class MetastoreApiPageCacheTest extends BrowserTestBase {
     $response = $this->apiRequest('GET', 'api/1/metastore/schemas/dataset/items/' . $identifier . '/docs');
     $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0]);
     $response = $this->apiRequest('GET', 'api/1/datastore/query/' . $identifier . '/0');
-    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0], $response->getBody()->getContents());
+    $this->assertEquals('MISS', $response->getHeaders()['X-Drupal-Cache'][0], (string) $response->getBody());
 
     // The import endpoints shouldn't be there at all anymore.
     $response = $this->apiRequest('GET', 'api/1/datastore/imports/' . $distributionId);

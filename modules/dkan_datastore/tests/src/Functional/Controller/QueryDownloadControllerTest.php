@@ -99,7 +99,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
       ['query' => ['format' => 'csv']]
     );
 
-    $lines = explode("\n", $response->getBody()->getContents());
+    $lines = explode("\n", (string) $response->getBody());
     $this->assertEquals(
       'id,name,extra_long_column_name_with_tons_of_characters_that_will_need_to_be_truncated_in_order_to_work,extra_long_column_name_with_tons_of_characters_that_will_need_to_be_truncated_in_order_to_work2',
       $lines[0]
@@ -116,7 +116,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
       ['query' => ['format' => 'csv']]
     );
 
-    $lines = explode("\n", $response->getBody()->getContents());
+    $lines = explode("\n", (string) $response->getBody());
     // Truncated headers from the datastore.
     $this->assertEquals(
       'id,name,extra_long_column_name_with_tons_of_characters_that_will_ne_e872,extra_long_column_name_with_tons_of_characters_that_will_ne_5127',
@@ -131,7 +131,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
       ['query' => ['format' => 'json']]
     );
 
-    $json_content = json_decode($response->getBody()->getContents());
+    $json_content = json_decode((string) $response->getBody());
     $titles = array_keys(get_object_vars($json_content->results[0]));
     $this->assertEquals([
       'id',
@@ -157,7 +157,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
         ],
       ]
     );
-    $json_content = json_decode($response->getBody()->getContents());
+    $json_content = json_decode((string) $response->getBody());
     $this->assertIsArray($json_content->results[0]);
     $this->assertEquals(['1', 'Greg', '45.6', '4'], $json_content->results[0]);
     $this->assertFalse(isset($json_content->schema));
@@ -276,7 +276,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
       ['query' => ['format' => 'csv']]
     );
 
-    $lines = explode("\n", $response->getBody()->getContents());
+    $lines = explode("\n", (string) $response->getBody());
     // Header should be using the dictionary title.
     $this->assertEquals('a,b_title,c,d,e', $lines[0]);
 
@@ -291,7 +291,7 @@ class QueryDownloadControllerTest extends BrowserTestBase {
       $this->baseUrl . '/api/1/datastore/query/' . $dataset_id . '/0/download',
       ['query' => ['format' => 'csv']]
     );
-    $lines = explode("\n", $response->getBody()->getContents());
+    $lines = explode("\n", (string) $response->getBody());
     // Header should be using the machine name title.
     $this->assertEquals('a,b,c,d,e', $lines[0]);
     // Date value should use the dictionary format.

@@ -291,7 +291,7 @@ class DictionaryEnforcerTest extends BrowserTestBase {
     $column_e = [];
     $response = $this->httpClient->get("api/1/datastore/query/$dataset_id/0");
     if ($response->getStatusCode() === 200) {
-      $data = json_decode($response->getBody()->getContents(), true);
+      $data = json_decode((string) $response->getBody(), true);
       if (isset($data['results']) && is_array($data['results'])) {
         $column_e = array_column($data['results'], 'e');
       }

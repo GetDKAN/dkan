@@ -103,7 +103,7 @@ class SampleContentCommandsTest extends BrowserTestBase {
     // What does the RESTful API say?
     $response = $this->getApiClient()->get('api/1/metastore/schemas/dataset/items');
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertCount(10, json_decode($response->getBody()->getContents()));
+    $this->assertCount(10, json_decode((string) $response->getBody()));
 
     // Do the import.
     $this->drush('queue:run localize_import');
@@ -120,13 +120,13 @@ class SampleContentCommandsTest extends BrowserTestBase {
     // What does the RESTful API say?
     $response = $this->getApiClient()->get('api/1/metastore/schemas/dataset/items');
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertCount(10, json_decode($response->getBody()->getContents()));
+    $this->assertCount(10, json_decode((string) $response->getBody()));
 
     // Find the bike lanes dataset.
     $identifier = 'cedcd327-4e5d-43f9-8eb1-c11850fa7c55';
     $response = $this->getApiClient()->get('api/1/metastore/schemas/dataset/items/' . $identifier);
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertIsObject($payload = json_decode($response->getBody()->getContents()));
+    $this->assertIsObject($payload = json_decode((string) $response->getBody()));
     $this->assertEquals($identifier, $payload->identifier ?? 'nope');
 
     // There is a download URL.
@@ -161,7 +161,7 @@ class SampleContentCommandsTest extends BrowserTestBase {
 
     $response = $this->getApiClient()->get('api/1/metastore/schemas/dataset/items');
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertCount(0, json_decode($response->getBody()->getContents()));
+    $this->assertCount(0, json_decode((string) $response->getBody()));
   }
 
 }

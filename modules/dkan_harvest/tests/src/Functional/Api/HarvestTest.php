@@ -92,7 +92,7 @@ class HarvestTest extends BrowserTestBase {
     $user = $this->createUser(['harvest_api_index'], 'harvest_testapiuser', FALSE);
     $response = $this->getApiClient($user)->get($endpoint);
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertEquals([], json_decode($response->getBody()->getContents()));
+    $this->assertEquals([], json_decode((string) $response->getBody()));
 
     // Add a harvest.
     $this->addHarvestPlan($identifier);
@@ -107,7 +107,7 @@ class HarvestTest extends BrowserTestBase {
     $response = $this->getApiClient($user)->get($endpoint);
     $this->assertEquals(200, $response->getStatusCode());
     // We see an identifier for a harvest which has not been run.
-    $this->assertEquals([$identifier], json_decode($response->getBody()->getContents()));
+    $this->assertEquals([$identifier], json_decode((string) $response->getBody()));
 
     // Auth user can run this harvest.
     $post_user = $this->createUser(['harvest_api_run'], 'harvest_post_user', FALSE);
@@ -115,7 +115,7 @@ class HarvestTest extends BrowserTestBase {
       RequestOptions::JSON => (object) ['plan_id' => $identifier],
     ]);
     $this->assertEquals(200, $response->getStatusCode());
-    $result = json_decode($response->getBody()->getContents(), TRUE);
+    $result = json_decode((string) $response->getBody(), TRUE);
     $this->assertEquals('SUCCESS', $result['result']['status']['extract'] ?? 'test fail');
   }
 
@@ -139,7 +139,7 @@ class HarvestTest extends BrowserTestBase {
     $user = $this->createUser(['harvest_api_index'], 'harvest_user', FALSE);
     $response = $this->getApiClient($user)->get($endpoint);
     $this->assertEquals(200, $response->getStatusCode());
-    $result = json_decode($response->getBody()->getContents(), TRUE);
+    $result = json_decode((string) $response->getBody(), TRUE);
     $this->assertEquals($identifier, $result['identifier'] ?? 'test fail');
   }
 
@@ -168,7 +168,7 @@ class HarvestTest extends BrowserTestBase {
       RequestOptions::QUERY => $plan_query,
     ]);
     $this->assertEquals(200, $response->getStatusCode());
-    $this->assertCount(1, json_decode($response->getBody()->getContents(), TRUE));
+    $this->assertCount(1, json_decode((string) $response->getBody(), TRUE));
   }
 
   public function testGetHarvestRunsIdentifierQuery() {
@@ -203,14 +203,14 @@ class HarvestTest extends BrowserTestBase {
     ]);
     $this->assertEquals(200, $response->getStatusCode());
     // Request the run info.
-    $result = json_decode($response->getBody()->getContents());
+    $result = json_decode((string) $response->getBody());
     // @see modules/dkan_harvest/docs/openapi_spec.json
     $this->assertIsArray($result);
     $response = $this->getApiClient($user)->get($runs_endpoint . '/' . $result[0] ?? 'bad_id', [
       RequestOptions::QUERY => $query,
     ]);
     $this->assertEquals(200, $response->getStatusCode());
-    $result = json_decode($response->getBody()->getContents());
+    $result = json_decode((string) $response->getBody());
     $this->assertEquals('SUCCESS', $result->status->extract ?? 'test fail');
   }
 
