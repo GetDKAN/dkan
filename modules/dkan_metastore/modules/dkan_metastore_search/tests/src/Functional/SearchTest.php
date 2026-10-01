@@ -41,7 +41,7 @@ class SearchTest extends BrowserTestBase {
       ->getCurrentRequest()
       ->getSchemeAndHttpHost();
     $client = new Client([
-      'base_uri' => $base_uri,
+      'base_uri' => rtrim($base_uri, '/') . '/',
       'timeout'  => 2.0,
       'http_errors' => FALSE,
     ]);
