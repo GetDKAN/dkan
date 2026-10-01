@@ -29,7 +29,7 @@ variables:
   SKIP_ESLINT: '1'
   DRUPAL_ROOT: '$CI_PROJECT_DIR/$_WEB_ROOT'
   _CSPELL_WORDS: 'dcat'
-  _CSPELL_IGNORE_PATHS: 'schema'
+  _CSPELL_IGNORE_PATHS: 'schema, modules/dkan_sample_content/files'
 
 .enable-mysql-local-infile: &enable-mysql-local-infile
   before_script:
