@@ -33,8 +33,14 @@ variables:
 
 .enable-mysql-local-infile: &enable-mysql-local-infile
   before_script:
-    - mysql -h database -u root -p"$MYSQL_ROOT_PASSWORD" -e "SET GLOBAL local_infile = 1;"
-    - mysql -h database -u root -p"$MYSQL_ROOT_PASSWORD" -e "SHOW GLOBAL VARIABLES LIKE 'local_infile';"
+    - |
+      mysql -h database -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "SET GLOBAL local_infile = 1;" \
+      || mysql -h database -u root -p"$MYSQL_ROOT_PASSWORD" -e "SET GLOBAL local_infile = 1;" \
+      || echo "WARNING: Could not enable local_infile via SQL."
+    - |
+      mysql -h database -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "SHOW GLOBAL VARIABLES LIKE 'local_infile';" \
+      || mysql -h database -u root -p"$MYSQL_ROOT_PASSWORD" -e "SHOW GLOBAL VARIABLES LIKE 'local_infile';" \
+      || echo "WARNING: Could not read local_infile status."
 
 phpunit:
   <<: *enable-mysql-local-infile
