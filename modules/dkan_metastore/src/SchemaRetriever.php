@@ -112,21 +112,23 @@ class SchemaRetriever implements RetrieverInterface, ContainerInjectionInterface
    *   If no schema directory is found.
    */
   protected function findSchemaDirectory($appRoot, $extensionList) {
+    $defaultSchema = $this->getDefaultSchemaDirectory($extensionList);
 
-    $drupalRoot = $appRoot;
-    $drupalRootSchema = $drupalRoot . "/schema";
+    $candidateDirectories = [
+      $appRoot . '/schema',
+      dirname($appRoot) . '/schema',
+      $defaultSchema,
+      $appRoot . '/' . ltrim($defaultSchema, '/'),
+    ];
 
-    $defaultSchema = $drupalRoot . "/" . $this->getDefaultSchemaDirectory($extensionList);
+    foreach (array_unique($candidateDirectories) as $directory) {
+      if (is_dir($directory . '/collections')) {
+        $this->directory = $directory;
+        return;
+      }
+    }
 
-    if (is_dir($drupalRootSchema)) {
-      $this->directory = $drupalRootSchema;
-    }
-    elseif (is_dir($defaultSchema)) {
-      $this->directory = $defaultSchema;
-    }
-    else {
-      throw new \Exception("No schema directory found.");
-    }
+    throw new \Exception("No schema directory found.");
   }
 
   /**

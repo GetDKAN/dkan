@@ -94,14 +94,22 @@ class SchemaRetrieverTest extends TestCase {
   }
 
   /**
+   * Ensures schema lookup works when Drupal app root is a web subdirectory.
+   */
+  public function testSchemaDirectoryWhenAppRootIsWebSubdirectory() {
+    $webAppRoot = self::APP_ROOT . '/web';
+    $retriever = $this->getSchemaRetriever(FALSE, $webAppRoot, 'dkan.info.yml');
+    $this->assertEquals(self::APP_ROOT . '/schema', $retriever->getSchemaDirectory());
+    $schema = $retriever->retrieve('dataset');
+    $this->assertNotFalse(json_decode((string) $schema));
+  }
+
+  /**
    * Private.
    */
-  private function getSchemaRetriever($badRoot = FALSE) {
-    if ($badRoot) {
-      $appRoot = "tmp";
-    }
-    else {
-      $appRoot = self::APP_ROOT;
+  private function getSchemaRetriever($badRoot = FALSE, $appRoot = NULL, $modulePathname = 'tmp') {
+    if ($appRoot === NULL) {
+      $appRoot = $badRoot ? 'tmp' : self::APP_ROOT;
     }
 
     $options = (new Options())
@@ -111,7 +119,7 @@ class SchemaRetrieverTest extends TestCase {
     $chain = (new Chain($this))
       ->add(Container::class, 'getParameter', $appRoot)
       ->add(Container::class, 'get', $options)
-      ->add(ModuleExtensionList::class, 'getPathname', "tmp");
+      ->add(ModuleExtensionList::class, 'getPathname', $modulePathname);
 
     return SchemaRetriever::create($chain->getMock());
   }
