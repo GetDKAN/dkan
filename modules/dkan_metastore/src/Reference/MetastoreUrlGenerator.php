@@ -103,19 +103,26 @@ class MetastoreUrlGenerator {
     }
 
     $request = $this->requestStack->getCurrentRequest();
-    $host = $request->getHost();
+    $host = $request ? $request->getHost() : '';
     if ($parts['host'] != $host) {
       throw new \DomainException("Current host $host does not match URL host {$parts['host']}");
+    }
+
+    $path = $parts['path'] ?? '';
+    if ($request && ($base_path = $request->getBasePath())) {
+      if (str_starts_with($path, $base_path)) {
+        $path = substr($path, strlen($base_path));
+      }
     }
 
     // Length of API base path.
     $base_len = strlen(DkanStreamWrapper::DKAN_API_URL_BASE);
 
-    if (substr($parts['path'], 0, $base_len) != DkanStreamWrapper::DKAN_API_URL_BASE) {
+    if (substr($path, 0, $base_len) != DkanStreamWrapper::DKAN_API_URL_BASE) {
       throw new \DomainException("URL $url path does not match DKAN API path.");
     }
 
-    $uri_path = substr($parts['path'], $base_len);
+    $uri_path = substr($path, $base_len);
 
     return self::DKAN_SCHEME . "://{$uri_path}";
   }

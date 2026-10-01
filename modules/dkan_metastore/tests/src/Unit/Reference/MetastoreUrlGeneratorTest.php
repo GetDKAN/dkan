@@ -37,6 +37,21 @@ class MetastoreUrlGeneratorTest extends TestCase {
     $this->assertEquals($uri, $generator->uriFromUrl($url));
   }
 
+  /**
+   * Test a valid local URL with a subfolder base path.
+   */
+  public function testUriFromUrlWithBasePath() {
+    $url = "https://thisdomain.com/web/api/1/metastore/schemas/data-dictionary/items/111";
+    $uri = "dkan://metastore/schemas/data-dictionary/items/111";
+    $request = Request::create('https://thisdomain.com/web/api/1/metastore/schemas/data-dictionary/items/111', 'GET', [], [], [], [
+      'SCRIPT_NAME' => '/web/index.php',
+      'SCRIPT_FILENAME' => '/var/www/html/web/index.php',
+    ]);
+    $generator = $this->getGenerator($request);
+
+    $this->assertEquals($uri, $generator->uriFromUrl($url));
+  }
+
   public function testUriFromBadUrl() {
     $url = "another-domain.com/api/1/metastore/schemas/data-dictionary/items/111";
     $generator = $this->getGenerator();
@@ -110,7 +125,7 @@ class MetastoreUrlGeneratorTest extends TestCase {
     $generator->extractItemId("http://web/api/1/metastore/data-dictionary/items/111");
   }
 
-  private function getGenerator() {
+  private function getGenerator(?Request $request = NULL) {
     // Create and set Drupal service container.
     $container = (new Chain($this))
       ->add(Container::class, 'get', (new Options())
@@ -143,7 +158,7 @@ class MetastoreUrlGeneratorTest extends TestCase {
       ->getMock();
 
     // Create mock RequestStack.
-    $request = new Request([], [], [], [], [], ['SERVER_NAME' => 'thisdomain.com']);
+    $request = $request ?? new Request([], [], [], [], [], ['SERVER_NAME' => 'thisdomain.com']);
     $requestStack = $this->getMockBuilder(RequestStack::class)
       ->onlyMethods(['getCurrentRequest'])
       ->getMock();
