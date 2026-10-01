@@ -37,11 +37,8 @@ class SearchTest extends BrowserTestBase {
   }
 
   public function testControllers() {
-    $base_uri = $this->container->get('request_stack')
-      ->getCurrentRequest()
-      ->getSchemeAndHttpHost();
     $client = new Client([
-      'base_uri' => rtrim($base_uri, '/') . '/',
+      'base_uri' => rtrim($this->baseUrl, '/') . '/',
       'timeout'  => 2.0,
       'http_errors' => FALSE,
     ]);
@@ -60,7 +57,7 @@ class SearchTest extends BrowserTestBase {
     }
 
     $controller = SearchController::create($this->container);
-    $request = Request::create($base_uri . '/api');
+    $request = Request::create($this->baseUrl . '/api');
 
     $response = $controller->search($request);
     $this->assertEquals('200', $response->getStatusCode());
@@ -70,7 +67,7 @@ class SearchTest extends BrowserTestBase {
 
     // Now test with errors.
     $request = Request::create(
-      $base_uri . '/api',
+      $this->baseUrl . '/api',
       'GET',
       ['page-size' => 'foo']
     );
@@ -82,7 +79,7 @@ class SearchTest extends BrowserTestBase {
 
     // Test past max page size
     $request = Request::create(
-      $base_uri . '/api',
+      $this->baseUrl . '/api',
       'GET',
       ['page-size' => 200]
     );
