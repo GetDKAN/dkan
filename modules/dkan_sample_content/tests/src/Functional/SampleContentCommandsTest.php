@@ -18,7 +18,18 @@ use GuzzleHttp\RequestOptions;
  */
 class SampleContentCommandsTest extends BrowserTestBase {
 
-  use DrushTestTrait;
+  use DrushTestTrait {
+    drush as drushTrait;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function drush($command, array $args = [], array $options = [], ?string $site_specification = NULL, ?string $cd = NULL, int $expected_return = 0, ?string $suffix = NULL, array $env = []): void {
+    // Pseudo-decorate the trait's drush method to include the base URL.
+    $options += ['uri' => $this->baseUrl];
+    $this->drushTrait($command, $args, $options, $site_specification, $cd, $expected_return, $suffix, $env);
+  }
 
   protected $defaultTheme = 'stark';
 
