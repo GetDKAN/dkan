@@ -6,6 +6,8 @@ use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
+ * Test the dkan:// stream wrapper.
+ *
  * @group dkan
  * @group dkan_common
  * @group kernel
