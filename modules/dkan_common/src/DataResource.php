@@ -399,22 +399,20 @@ class DataResource implements \JsonSerializable {
 
   /**
    * Generates MD5 checksum for a file.
+   *
+   * @return void
+   *   The function tries to set the checksum property. Note that it may fail
+   *   silently if the file does not exist; the fact that this function has run
+   *   is not a guarantee that $this->checksum will be set.
    */
   public function generateChecksum() {
-    try {
-      $this->checksum = md5_file($this->getFilePath());
+    $file_path = $this->getFilePath();
+    // It's valid for a local file to not exist in some circumstances.
+    if ($this->getPerspective() === ResourceLocalizer::LOCAL_FILE_PERSPECTIVE && !file_exists($file_path)) {
+      return;
     }
-    catch (\Throwable $throwable) {
-      // Re-throw the throwable if we're not in the perspective of a local file
-      // that doesn't exist. It's valid for a local file to not exist in some
-      // circumstances.
-      if (!(
-        $this->getPerspective() === ResourceLocalizer::LOCAL_FILE_PERSPECTIVE &&
-        !file_exists($this->getFilePath())
-      )) {
-        throw $throwable;
-      }
-    }
+
+    $this->checksum = md5_file($file_path);
   }
 
 }
