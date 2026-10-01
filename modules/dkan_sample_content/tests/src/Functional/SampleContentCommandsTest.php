@@ -46,7 +46,7 @@ class SampleContentCommandsTest extends BrowserTestBase {
    */
   protected function getApiClient(?User $authUser = NULL, $http_errors = FALSE): Client {
     $options = [
-      'base_uri' => $this->baseUrl,
+      'base_uri' => rtrim($this->baseUrl, '/') . '/',
       RequestOptions::HTTP_ERRORS => $http_errors,
     ];
     if ($authUser) {
@@ -101,7 +101,7 @@ class SampleContentCommandsTest extends BrowserTestBase {
     $this->assertEmpty($run_info['error'] ?? []);
 
     // What does the RESTful API say?
-    $response = $this->getApiClient()->get('/api/1/metastore/schemas/dataset/items');
+    $response = $this->getApiClient()->get('api/1/metastore/schemas/dataset/items');
     $this->assertEquals(200, $response->getStatusCode());
     $this->assertCount(10, json_decode($response->getBody()->getContents()));
 
@@ -118,13 +118,13 @@ class SampleContentCommandsTest extends BrowserTestBase {
     );
 
     // What does the RESTful API say?
-    $response = $this->getApiClient()->get('/api/1/metastore/schemas/dataset/items');
+    $response = $this->getApiClient()->get('api/1/metastore/schemas/dataset/items');
     $this->assertEquals(200, $response->getStatusCode());
     $this->assertCount(10, json_decode($response->getBody()->getContents()));
 
     // Find the bike lanes dataset.
     $identifier = 'cedcd327-4e5d-43f9-8eb1-c11850fa7c55';
-    $response = $this->getApiClient()->get('/api/1/metastore/schemas/dataset/items/' . $identifier);
+    $response = $this->getApiClient()->get('api/1/metastore/schemas/dataset/items/' . $identifier);
     $this->assertEquals(200, $response->getStatusCode());
     $this->assertIsObject($payload = json_decode($response->getBody()->getContents()));
     $this->assertEquals($identifier, $payload->identifier ?? 'nope');
@@ -159,7 +159,7 @@ class SampleContentCommandsTest extends BrowserTestBase {
       $this->assertStringContainsString($expected, $output);
     }
 
-    $response = $this->getApiClient()->get('/api/1/metastore/schemas/dataset/items');
+    $response = $this->getApiClient()->get('api/1/metastore/schemas/dataset/items');
     $this->assertEquals(200, $response->getStatusCode());
     $this->assertCount(0, json_decode($response->getBody()->getContents()));
   }

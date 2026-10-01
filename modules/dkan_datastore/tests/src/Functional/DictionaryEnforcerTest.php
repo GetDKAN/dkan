@@ -128,7 +128,7 @@ class DictionaryEnforcerTest extends BrowserTestBase {
       ->getExternalUrl();
     $this->httpClient = $this->container->get('http_client_factory')
       ->fromOptions([
-        'base_uri' => $this->baseUrl,
+        'base_uri' => rtrim($this->baseUrl, '/') . '/',
       ]);
   }
 

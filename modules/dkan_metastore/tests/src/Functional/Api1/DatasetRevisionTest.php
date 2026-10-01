@@ -18,12 +18,12 @@ class DatasetRevisionTest extends Api1TestBase {
 
   public function getEndpoint():string {
     $data = $this->getSampleDataset(0);
-    return "/api/1/metastore/schemas/dataset/items/{$data->identifier}/revisions";
+    return "api/1/metastore/schemas/dataset/items/{$data->identifier}/revisions";
   }
 
   public function testList() {
     $data = $this->getSampleDataset(0);
-    $response = $this->httpClient->post('/api/1/metastore/schemas/dataset/items', [
+    $response = $this->httpClient->post('api/1/metastore/schemas/dataset/items', [
       RequestOptions::JSON => $data,
       RequestOptions::AUTH => $this->auth,
     ]);
@@ -59,7 +59,7 @@ class DatasetRevisionTest extends Api1TestBase {
     $this->assertEquals(200, $response->getStatusCode());
 
     // Confirm error if we have a non-existant dataset ID.
-    $badDatasetUrl = "/api/1/metastore/schemas/dataset/items/abc-123/revisions/$listRevision->identifier";
+    $badDatasetUrl = "api/1/metastore/schemas/dataset/items/abc-123/revisions/$listRevision->identifier";
     $response = $this->httpClient->get($badDatasetUrl, [
       RequestOptions::HTTP_ERRORS => FALSE,
       RequestOptions::AUTH => $this->auth,
@@ -69,7 +69,7 @@ class DatasetRevisionTest extends Api1TestBase {
     $this->assertStringContainsString("No dataset found", $responseBody->message);
 
     // Modify item.
-    $this->httpClient->patch("/api/1/metastore/schemas/dataset/items/{$data->identifier}", [
+    $this->httpClient->patch("api/1/metastore/schemas/dataset/items/{$data->identifier}", [
       RequestOptions::JSON => ['title' => "Changing title"],
       RequestOptions::AUTH => $this->auth,
     ]);
@@ -84,7 +84,7 @@ class DatasetRevisionTest extends Api1TestBase {
     $this->assertTrue($responseBody[0]->published);
 
     // Test a bad dataset ID.
-    $badDatasetUrl = "/api/1/metastore/schemas/dataset/items/abc-123/revisions";
+    $badDatasetUrl = "api/1/metastore/schemas/dataset/items/abc-123/revisions";
     $response = $this->httpClient->get($badDatasetUrl, [
       RequestOptions::HTTP_ERRORS => FALSE,
       RequestOptions::AUTH => $this->auth,
@@ -95,11 +95,11 @@ class DatasetRevisionTest extends Api1TestBase {
 
     // Confirm error if we have real but mismatched revision and dataset IDs.
     $secondData = $this->getSampleDataset(1);
-    $this->httpClient->post('/api/1/metastore/schemas/dataset/items', [
+    $this->httpClient->post('api/1/metastore/schemas/dataset/items', [
       RequestOptions::JSON => $secondData,
       RequestOptions::AUTH => $this->auth,
     ]);
-    $badDatasetUrl = "/api/1/metastore/schemas/dataset/items/$secondData->identifier/revisions/$listRevision->identifier";
+    $badDatasetUrl = "api/1/metastore/schemas/dataset/items/$secondData->identifier/revisions/$listRevision->identifier";
     $response = $this->httpClient->get($badDatasetUrl, [
       RequestOptions::HTTP_ERRORS => FALSE,
       RequestOptions::AUTH => $this->auth,
@@ -121,7 +121,7 @@ class DatasetRevisionTest extends Api1TestBase {
   public function testPost() {
     $this->setDefaultModerationState('draft');
     $data = $this->getSampleDataset(0);
-    $this->httpClient->post('/api/1/metastore/schemas/dataset/items', [
+    $this->httpClient->post('api/1/metastore/schemas/dataset/items', [
       RequestOptions::JSON => $data,
       RequestOptions::AUTH => $this->auth,
     ]);
@@ -178,7 +178,7 @@ class DatasetRevisionTest extends Api1TestBase {
 
       // Confirm dataset visibility matches expected.
       $expectedCode = $public ? 200 : 404;
-      $datasetUrl = "/api/1/metastore/schemas/dataset/items/{$data->identifier}";
+      $datasetUrl = "api/1/metastore/schemas/dataset/items/{$data->identifier}";
       $response = $this->httpClient->get($datasetUrl, [
         RequestOptions::HTTP_ERRORS => FALSE,
       ]);
@@ -204,7 +204,7 @@ class DatasetRevisionTest extends Api1TestBase {
       'message' => "New published revision.",
       'state' => 'published',
     ];
-    $response = $this->httpClient->post('/api/1/metastore/schemas/dataset/items/abc-123/revisions', [
+    $response = $this->httpClient->post('api/1/metastore/schemas/dataset/items/abc-123/revisions', [
       RequestOptions::JSON => $newRevision,
       RequestOptions::AUTH => $this->auth,
       RequestOptions::HTTP_ERRORS => FALSE,

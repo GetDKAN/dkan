@@ -52,7 +52,7 @@ class HarvestTest extends BrowserTestBase {
    */
   protected function getApiClient(?User $authUser = NULL, $http_errors = FALSE): Client {
     $options = [
-      'base_uri' => $this->baseUrl,
+      'base_uri' => rtrim($this->baseUrl, '/') . '/',
       RequestOptions::HTTP_ERRORS => $http_errors,
     ];
     if ($authUser) {
@@ -80,7 +80,7 @@ class HarvestTest extends BrowserTestBase {
 
   public function testGetHarvestPlans() {
     $identifier = uniqid();
-    $endpoint = '/api/1/harvest/plans';
+    $endpoint = 'api/1/harvest/plans';
 
     // 02_harvest_empty.spec.js:GET harvest/plans
     // Unauthenticated request to empty list of harvests, should yield 401.
@@ -111,7 +111,7 @@ class HarvestTest extends BrowserTestBase {
 
     // Auth user can run this harvest.
     $post_user = $this->createUser(['harvest_api_run'], 'harvest_post_user', FALSE);
-    $response = $this->getApiClient($post_user)->post('/api/1/harvest/runs', [
+    $response = $this->getApiClient($post_user)->post('api/1/harvest/runs', [
       RequestOptions::JSON => (object) ['plan_id' => $identifier],
     ]);
     $this->assertEquals(200, $response->getStatusCode());
@@ -129,7 +129,7 @@ class HarvestTest extends BrowserTestBase {
   public function testGetHarvestPlansPlanId() {
     $identifier = uniqid();
     $this->addHarvestPlan($identifier);
-    $endpoint = '/api/1/harvest/plans/' . $identifier;
+    $endpoint = 'api/1/harvest/plans/' . $identifier;
 
     // 03_harvest.spec.js: GET harvest/plans/PLAN_ID : Requires authenticated user
     $response = $this->getApiClient()->get($endpoint);
@@ -147,7 +147,7 @@ class HarvestTest extends BrowserTestBase {
     $identifier = uniqid();
     $this->addHarvestPlan($identifier);
     $plan_query = ['plan' => $identifier];
-    $endpoint = '/api/1/harvest/runs';
+    $endpoint = 'api/1/harvest/runs';
 
     // Run the harvest.
     /** @var \Drupal\dkan_harvest\HarvestService $harvest_service */
@@ -173,7 +173,7 @@ class HarvestTest extends BrowserTestBase {
 
   public function testGetHarvestRunsIdentifierQuery() {
     $identifier = uniqid();
-    $runs_endpoint = '/api/1/harvest/runs';
+    $runs_endpoint = 'api/1/harvest/runs';
 
     // 03_harvest.spec.js: POST harvest/runs : Requires authenticated user
     // @todo Create POST-oriented test method and move this to it. This single

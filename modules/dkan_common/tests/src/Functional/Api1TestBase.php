@@ -84,7 +84,7 @@ abstract class Api1TestBase extends BrowserTestBase {
 
     $this->httpClient = $this->container->get('http_client_factory')
       ->fromOptions([
-        'base_uri' => $this->baseUrl,
+        'base_uri' => rtrim($this->baseUrl, '/') . '/',
       ]);
     $this->auth = ['testapiuser', $user->pass_raw];
     $this->authNoPerms = ['testnopermsuser', $user2->pass_raw];

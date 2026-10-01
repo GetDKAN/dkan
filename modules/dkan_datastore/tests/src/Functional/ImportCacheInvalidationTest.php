@@ -51,7 +51,7 @@ class ImportCacheInvalidationTest extends BrowserTestBase {
     // Set up a Guzzle client using our service.
     $this->httpClient = $this->container->get('http_client_factory')
       ->fromOptions([
-        'base_uri' => $this->baseUrl,
+        'base_uri' => rtrim($this->baseUrl, '/') . '/',
         'http_errors' => FALSE,
         'timeout' => 600,
       ]);
