@@ -24,9 +24,9 @@ include:
 # Uncomment the lines below if you want to override any of the variables. The following is just an example.
 ################
 variables:
-#   SKIP_ESLINT: '1'
 #   OPT_IN_TEST_NEXT_MAJOR: '1'
 #   _CURL_TEMPLATES_REF: 'main'
+  SKIP_ESLINT: '1'
   DRUPAL_ROOT: '$CI_PROJECT_DIR/$_WEB_ROOT'
   _CSPELL_WORDS: 'dcat'
   _CSPELL_IGNORE_PATHS: 'schema'
