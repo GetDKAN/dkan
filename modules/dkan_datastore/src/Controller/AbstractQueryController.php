@@ -2,11 +2,15 @@
 
 namespace Drupal\dkan_datastore\Controller;
 
+use Drupal\Core\Cache\CacheableMetadata;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Database\DatabaseExceptionWrapper;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Http\Exception\CacheableServiceUnavailableHttpException;
+use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\Core\State\StateInterface;
 use Drupal\dkan_common\DatasetInfo;
 use Drupal\dkan_common\JsonResponseTrait;
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\State\StateInterface;
 use Drupal\dkan_datastore\Exception\EmptyResourceException;
 use Drupal\dkan_datastore\Service\DatastoreQuery;
 use Drupal\dkan_datastore\Service\Query as QueryService;
@@ -56,6 +60,11 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   protected StateInterface $state;
 
   /**
+   * Logger channel service.
+   */
+  protected LoggerChannelInterface $logger;
+
+  /**
    * Default API rows limit.
    *
    * @var int
@@ -71,12 +80,14 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     MetastoreApiResponse $metastoreApiResponse,
     ConfigFactoryInterface $configFactory,
     StateInterface $state,
+    LoggerChannelInterface $logger,
   ) {
     $this->queryService = $queryService;
     $this->datasetInfo = $datasetInfo;
     $this->metastoreApiResponse = $metastoreApiResponse;
     $this->configFactory = $configFactory;
     $this->state = $state;
+    $this->logger = $logger;
   }
 
   /**
@@ -89,6 +100,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       $container->get('dkan.metastore.api_response'),
       $container->get('config.factory'),
       $container->get('state'),
+      $container->get('dkan.datastore.logger_channel'),
     );
   }
 
@@ -279,6 +291,21 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     try {
       return $this->queryService->runQuery($datastoreQuery);
     }
+    catch (DatabaseExceptionWrapper | \PDOException $e) {
+      // Log the error.
+      $this->logger->error($e->getMessage());
+
+      // Create a new HttpException object so that getResponseFromException()
+      // can use its headers and cacheable metadata.
+      $http_exception = new CacheableServiceUnavailableHttpException(
+        (new CacheableMetadata())
+          ->setCacheMaxAge(self::DEGRADE_MODE_RETRY_AFTER),
+        self::DEGRADE_MODE_RETRY_AFTER,
+        // Generic error message for public consumption.
+        'Service unavailable'
+      );
+      return $this->getResponseFromException($http_exception, $http_exception->getStatusCode());
+    }
     catch (HttpException $e) {
       return $this->getResponseFromException($e, $e->getStatusCode());
     }
@@ -286,6 +313,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       return $this->getResponseFromException($e, 404);
     }
     catch (\Exception $e) {
+      $this->logger->error($e->getMessage());
       $code = (str_contains($e->getMessage(), "Error retrieving")) ? 404 : 400;
       return $this->getResponseFromException($e, $code);
     }
