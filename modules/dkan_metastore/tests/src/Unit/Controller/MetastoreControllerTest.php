@@ -9,6 +9,8 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
+use Drupal\dkan_metastore\ContentModeration\ContentModerationHelper;
 use Drupal\dkan_metastore\Controller\MetastoreController;
 use Drupal\dkan_metastore\DatasetApiDocs;
 use Drupal\dkan_metastore\Exception\ExistingObjectException;
@@ -22,7 +24,6 @@ use Drupal\dkan_metastore\SchemaRetriever;
 use Drupal\dkan_metastore\Storage\Data;
 use Drupal\dkan_metastore\Storage\NodeData;
 use Drupal\dkan_metastore\ValidMetadataFactory;
-use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -135,7 +136,14 @@ class MetastoreControllerTest extends TestCase {
     $configFactoryMock = (new Chain($this))
       ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
       ->getMock();
-    $nodeDataMock = new NodeData($schema_id, $entityTypeManagerMock, $configFactoryMock, $this->createStub(FileSystemInterface::class), $this->createStub(LoggerInterface::class));
+    $nodeDataMock = new NodeData(
+      $schema_id,
+      $entityTypeManagerMock,
+      $configFactoryMock,
+      $this->createStub(FileSystemInterface::class),
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(ContentModerationHelper::class),
+    );
     $container = $this->getCommonMockChain()
       ->add(MetastoreService::class, 'getStorage', $nodeDataMock)
       ->getMock();
@@ -502,6 +510,7 @@ EOF;
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('dkan.metastore.dataset_api_docs', DatasetApiDocs::class)
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
+      ->add('dkan.metastore.content_moderation_helper', ContentModerationHelper::class)
       ->index(0);
 
     return (new Chain($this))

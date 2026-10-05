@@ -21,6 +21,7 @@ use Procrastinator\Result;
 class ImportInfoListTest extends KernelTestBase {
 
   protected static $modules = [
+    'content_moderation',
     'dkan_common',
     'dkan_datastore',
     'dkan_metastore',

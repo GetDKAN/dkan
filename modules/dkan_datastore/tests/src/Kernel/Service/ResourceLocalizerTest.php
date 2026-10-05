@@ -20,11 +20,13 @@ use Procrastinator\Result;
 class ResourceLocalizerTest extends KernelTestBase {
 
   protected static $modules = [
+    'content_moderation',
     'node',
     'user',
     'dkan_common',
     'dkan_datastore',
     'dkan_metastore',
+    'workflows',
   ];
 
   /**

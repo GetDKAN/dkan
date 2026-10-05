@@ -15,10 +15,12 @@ use Drupal\KernelTests\KernelTestBase;
 class SampleContentServiceTest extends KernelTestBase {
 
   protected static $modules = [
+    'content_moderation',
     'dkan_sample_content',
     'dkan_harvest',
     'dkan_metastore',
     'dkan_common',
+    'workflows',
   ];
 
   protected function setUp() : void {

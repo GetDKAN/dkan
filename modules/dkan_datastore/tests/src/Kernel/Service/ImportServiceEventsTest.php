@@ -22,17 +22,17 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class ImportServiceEventsTest extends KernelTestBase implements EventSubscriberInterface {
 
-  protected $strictConfigSchema = FALSE;
-
   protected static $modules = [
+    'content_moderation',
     'dkan_common',
     'dkan_datastore',
     'dkan_metastore',
-    'node',
-    'user',
     'field',
-    'text',
+    'node',
     'system',
+    'text',
+    'user',
+    'workflows',
   ];
 
   /**
