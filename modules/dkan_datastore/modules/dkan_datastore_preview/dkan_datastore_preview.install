@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for the DKAN Datastore Preview module.
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * Enables the data_preview extra field on the default view display for the
+ * data node type so previews appear out of the box.
+ */
+function dkan_datastore_preview_install() {
+  $display = \Drupal::entityTypeManager()
+    ->getStorage('entity_view_display')
+    ->load('node.data.default');
+
+  if ($display) {
+    $display->setComponent('data_preview', [
+      'weight' => 100,
+    ]);
+    $display->save();
+  }
+}

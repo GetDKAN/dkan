@@ -1,0 +1,65 @@
+.dkan-datastore-preview {
+  margin: 1em 0;
+}
+
+.dkan-datastore-preview__controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin-bottom: 0.75em;
+}
+
+.dkan-datastore-preview__page-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.dkan-datastore-preview__summary {
+  font-size: 0.9em;
+}
+
+.dkan-datastore-preview__table-wrapper {
+  overflow-x: auto;
+}
+
+.dkan-datastore-preview__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dkan-datastore-preview__table thead th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75em 1em;
+  border-bottom: 2px solid #ccc;
+  white-space: nowrap;
+}
+
+.dkan-datastore-preview__table thead th a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
+.dkan-datastore-preview__table tbody td {
+  padding: 0.5em 1em;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.dkan-datastore-preview__table tbody tr:hover {
+  background-color: #fafafa;
+}
+
+.dkan-datastore-preview__footer {
+  margin-top: 0.75em;
+}
+
+.dkan-datastore-preview__message {
+  padding: 0.75em 1em;
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+}

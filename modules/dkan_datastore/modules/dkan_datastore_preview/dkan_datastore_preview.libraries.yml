@@ -1,0 +1,4 @@
+preview:
+  css:
+    component:
+      css/dkan-datastore-preview.css: {}

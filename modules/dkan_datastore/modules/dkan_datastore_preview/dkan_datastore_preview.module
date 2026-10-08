@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * @file
+ * Hook implementations for the DKAN Datastore Preview module.
+ *
+ * Hooks live in \Drupal\dkan_datastore_preview\Hook\DataPreviewHooks. These
+ * stubs keep Drupal 10 working; Drupal 11.1+ uses the #[Hook] attributes and
+ * skips functions marked #[LegacyHook].
+ */
+
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Hook\Attribute\LegacyHook;
+use Drupal\dkan_datastore_preview\Hook\DataPreviewHooks;
+
+/**
+ * Implements hook_theme().
+ */
+#[LegacyHook]
+function dkan_datastore_preview_theme(): array {
+  return \Drupal::service(DataPreviewHooks::class)->theme();
+}
+
+/**
+ * Implements hook_entity_extra_field_info().
+ */
+#[LegacyHook]
+function dkan_datastore_preview_entity_extra_field_info(): array {
+  return \Drupal::service(DataPreviewHooks::class)->entityExtraFieldInfo();
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view() for node entities.
+ */
+#[LegacyHook]
+function dkan_datastore_preview_node_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode): void {
+  \Drupal::service(DataPreviewHooks::class)->nodeView($build, $entity, $display, $view_mode);
+}

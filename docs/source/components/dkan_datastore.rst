@@ -32,6 +32,11 @@ and a new import will be triggered.
 .. include:: ../../../modules/dkan_datastore/modules/dkan_datastore_mysql_import/README.md
    :parser: myst_parser.sphinx_
 
+.. _datastore_preview:
+
+.. include:: ../../../modules/dkan_datastore/modules/dkan_datastore_preview/README.md
+   :parser: myst_parser.sphinx_
+
 Datastore Settings
 ------------------
 
