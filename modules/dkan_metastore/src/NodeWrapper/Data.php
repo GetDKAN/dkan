@@ -79,6 +79,10 @@ class Data implements MetastoreItemInterface {
     if ($this->node->get(self::DATA_TYPE_FIELD)->isEmpty()) {
       $this->node->set(self::DATA_TYPE_FIELD, self::DEFAULT_DATA_TYPE);
     }
+    // Stash the 'raw' metadata if it's not already there.
+    if (!isset($this->node->rawMetadata)) {
+      $this->node->rawMetadata = $this->node->get(self::JSON_METADATA_FIELD)->value;
+    }
   }
 
   /**
@@ -106,7 +110,6 @@ class Data implements MetastoreItemInterface {
    * Getter.
    */
   public function getModifiedDate() {
-    $this->saveRawMetadata();
     // Use revision date because the latest revision date does not
     // match the node changed value when there are multiple drafts.
     return $this->node->getRevisionCreationTime();
@@ -116,26 +119,25 @@ class Data implements MetastoreItemInterface {
    * Getter.
    */
   public function getIdentifier() {
-    $this->saveRawMetadata();
-
     return $this->node->uuid();
   }
 
   /**
-   * The unaltered version of the metadata.
+   * {@inheritDoc}
    */
   public function getRawMetadata() {
-    $this->saveRawMetadata();
     if (isset($this->node->rawMetadata)) {
       return json_decode($this->node->rawMetadata);
     }
+    return NULL;
   }
 
   /**
-   * Protected.
+   * Get the schema name for the Data node.
+   *
+   * @returns string
    */
   public function getDataType() {
-    $this->saveRawMetadata();
     return $this->node->get('field_data_type')->value;
   }
 
@@ -143,15 +145,13 @@ class Data implements MetastoreItemInterface {
    * {@inheritDoc}
    */
   public function getMetadata() {
-    $this->saveRawMetadata();
     return json_decode($this->node->get(self::JSON_METADATA_FIELD)->getString());
   }
 
   /**
-   * Protected.
+   * {@inheritDoc}
    */
   public function setMetadata($metadata) {
-    $this->saveRawMetadata();
     $this->node->set(self::JSON_METADATA_FIELD, json_encode($metadata));
   }
 
@@ -159,7 +159,6 @@ class Data implements MetastoreItemInterface {
    * Setter.
    */
   public function setIdentifier($identifier) {
-    $this->saveRawMetadata();
     $this->node->set('uuid', $identifier);
   }
 
@@ -167,7 +166,6 @@ class Data implements MetastoreItemInterface {
    * Setter.
    */
   public function setTitle($title) {
-    $this->saveRawMetadata();
     $this->node->set('title', $title);
   }
 
@@ -197,24 +195,7 @@ class Data implements MetastoreItemInterface {
    * Protected.
    */
   public function getSchemaId() {
-    $this->saveRawMetadata();
     return $this->getEntity()->get('field_data_type')->getString();
-  }
-
-  /**
-   * Temporarily save the raw json metadata, for later use.
-   *
-   * Protected so that we can mock it in tests.
-   *
-   * @see \Drupal\Tests\dkan_metastore\Controller\Kernel\MetastoreAccessManagerTest
-   *
-   * @todo The need to call saveRawMetadata() from every other method seems
-   *   like a code smell.
-   */
-  protected function saveRawMetadata() {
-    if (!isset($this->node->rawMetadata)) {
-      $this->node->rawMetadata = $this->node->get(self::JSON_METADATA_FIELD)->value;
-    }
   }
 
   /**

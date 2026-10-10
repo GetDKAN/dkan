@@ -23,10 +23,15 @@ interface MetastoreItemInterface extends CacheableDependencyInterface {
   public function getIdentifier();
 
   /**
-   * Get the metadata that was present in this item at time of generation.
+   * Get the metadata that was present when it was originally generated.
+   *
+   * This is the metadata that was present on the entity when it was originally
+   * wrapped.
    *
    * @return mixed
    *   The JSON-decoded metadata or NULL.
+   *
+   * @see self::getMetadata()
    */
   public function getRawMetadata();
 
@@ -43,6 +48,8 @@ interface MetastoreItemInterface extends CacheableDependencyInterface {
    *
    * @return mixed
    *   The JSON-decoded metadata or NULL.
+   *
+   * @see self::getRawMetadata()
    */
   public function getMetadata();
 
