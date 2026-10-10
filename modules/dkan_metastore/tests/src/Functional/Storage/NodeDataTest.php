@@ -11,7 +11,7 @@ use RootedData\RootedJsonData;
 
 /**
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group functional
  * @group btb
  * @group functional3

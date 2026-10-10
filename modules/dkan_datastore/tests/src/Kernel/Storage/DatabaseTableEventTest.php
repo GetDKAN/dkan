@@ -85,18 +85,24 @@ class DatabaseTableEventTest extends KernelTestBase implements EventSubscriberIn
 
     $schema = $data_table->getSchema();
 
-    // DatabaseTable added this primary key.
-    $this->assertSame(['record_number'], $schema['primary key']);
+    // Our ID field made the round-trip.
+    $this->assertSame(
+      $id_schema['fields']['id'],
+      $schema['fields']['id'] ?? []
+    );
+    // ID is still the primary key.
+    $this->assertSame(['id'], $schema['primary key']);
+
+    // DatabaseTable still added the record_number field.
     $this->assertSame([
       'type' => 'serial',
       'unsigned' => TRUE,
       'not null' => TRUE,
     ], $schema['fields']['record_number']);
-
-    // Our ID field made the round-trip.
-    $this->assertSame(
-      $id_schema['fields']['id'],
-      $schema['fields']['id'] ?? []
+    // The record_number field is a unique key.
+    $this->assertArrayHasKey(
+      'record_number',
+      $schema['unique keys'] ?? []
     );
 
     // Both subscribers made changes.

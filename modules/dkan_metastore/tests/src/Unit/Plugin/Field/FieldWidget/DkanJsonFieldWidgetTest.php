@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Test class for ValueHandlerTest.
  *
- * @group metastore
+ * @group dkan_metastore
  * @coversDefaultClass \Drupal\dkan_metastore\WidgetRouter
  */
 class DkanJsonFieldWidgetTest extends TestCase {

@@ -8,7 +8,7 @@ use Drupal\KernelTests\KernelTestBase;
 
 /**
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group kernel
  *
  * @covers \Drupal\dkan_metastore\ResourceMapper

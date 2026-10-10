@@ -37,7 +37,7 @@ use Symfony\Component\Mime\MimeTypeGuesserInterface;
  * @coversDefaultClass \Drupal\dkan_metastore\Reference\Referencer
  *
  * @group dkan
- * @group metastore
+ * @group dkan_metastore
  * @group unit
  */
 class ReferencerTest extends TestCase {

@@ -10,7 +10,7 @@ use GuzzleHttp\RequestOptions;
  * Tests the revision API.
  *
  * @group functional2
- * @group metastore
+ * @group dkan_metastore
  *
  * @coversDefaultClass \Drupal\dkan_metastore\Controller\MetastoreRevisionController
  */

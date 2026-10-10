@@ -145,7 +145,7 @@ dkan_datastore.sql_endpoint.post.api:
   defaults:
     { _controller: '\Drupal\dkan_datastore\SqlEndpoint\WebServiceApi::runQueryPost'}
   requirements:
-    _access: 'TRUE'
+    _permission: 'access content'
 
 dkan_datastore.dkan_resource_settings:
   path: '/admin/dkan/resources'

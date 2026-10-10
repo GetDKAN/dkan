@@ -12,8 +12,8 @@ use Drupal\Tests\BrowserTestBase;
  * submitting a dataset form. When disabled, users remain on the dataset node page.
  *
  * @group dkan
- * @group metastore
- * @group metastore_admin
+ * @group dkan_metastore
+ * @group dkan_metastore_admin
  * @group functional
  * @group functional1
  */

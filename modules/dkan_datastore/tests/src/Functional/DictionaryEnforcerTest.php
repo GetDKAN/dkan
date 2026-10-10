@@ -275,6 +275,9 @@ class DictionaryEnforcerTest extends BrowserTestBase {
           'a',
           'd',
         ],
+        'record_number' => [
+          'record_number'
+        ],
       ],
       'fulltextIndexes' => [
         'fulltext_index_a' => [
