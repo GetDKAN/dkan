@@ -2,18 +2,28 @@
 
 namespace Drupal\Tests\Unit\harvest;
 
+use Drupal\Core\Logger\LoggerChannel;
+use Drupal\Core\Logger\LoggerChannelFactory;
+use Drupal\Tests\dkan_harvest\MemStore;
 use Drupal\dkan_harvest\ETL\Factory;
 use Drupal\dkan_harvest\Harvester;
 use Drupal\dkan_harvest\ResultInterpreter;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use Drupal\Tests\dkan_harvest\MemStore;
+use Symfony\Component\DependencyInjection\Container;
 
+/**
+ * @covers Harvester
+ * @coversDefaultClass Harvester
+ * @group dkan_harvest
+ * @group unit
+ */
 class HarvesterTest extends TestCase {
 
   public function testPlanValidation(): void {
-    // opis v2 represents missing required fields as an array.
+    // Opis v2 represents missing required fields as an array.
     $this->expectExceptionMessage("Invalid harvest plan. load {\"missing\":[\"type\"]}");
     $plan = $this->getPlan("badplan");
     $this->getHarvester($plan, new MemStore(), new MemStore());
@@ -121,6 +131,74 @@ class HarvesterTest extends TestCase {
 
     $factory = new Factory($plan, $item_store, $hash_store, $client);
     return new Harvester($factory);
+  }
+
+  public function testRevertExceptions() {
+    $logger = $this->getMockBuilder(LoggerChannel::class)
+      ->disableOriginalConstructor()
+      ->onlyMethods(['error'])
+      ->getMock();
+    $logger_factory = $this->getMockBuilder(LoggerChannelFactory::class)
+      ->disableOriginalConstructor()
+      ->onlyMethods(['get'])
+      ->getMock();
+    $logger_factory->expects($this->any())
+      ->method('get')
+      ->willReturn($logger);
+
+    $container = new Container();
+    $container->set('logger.factory', $logger_factory);
+    \Drupal::setContainer($container);
+
+    $factory = $this->getMockBuilder(Factory::class)
+      ->onlyMethods(['get'])
+      ->setConstructorArgs([
+        $this->getPlan("plan"),
+        new \stdClass(),
+        new StubHashStorage(),
+      ])
+      ->getMock();
+    $factory->expects($this->any())
+      ->method('get')
+      // All calls to $load->removeItem will produce an exception.
+      // @see StubLoad::removeItem()
+      ->willReturn(new StubLoad());
+
+    $harvester = new Harvester($factory);
+
+    // Even though all 5 calls to $load->removeItem() threw exceptions, we
+    // should still see a count of 5 attempts.
+    $this->assertEquals(5, $harvester->revert());
+  }
+
+}
+
+/**
+ * A load object.
+ *
+ * We can mock this because it's not typed and doesn't have an interface.
+ */
+class StubLoad {
+
+  public function removeItem() {
+    throw new MissingObjectException();
+  }
+
+}
+
+/**
+ * A hash storage object.
+ *
+ * We can mock this because it's not typed and doesn't have an interface.
+ */
+class StubHashStorage {
+
+  public function retrieveAll(): array {
+    return [1, 2, 3, 4, 5];
+  }
+
+  public function remove() {
+    // No-op.
   }
 
 }
