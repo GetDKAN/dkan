@@ -254,6 +254,12 @@ abstract class Data implements MetastoreEntityStorageInterface {
     }
     elseif ($state !== $entity->get('moderation_state')->getString()) {
       $entity->set('moderation_state', $state);
+      if ($entity->getEntityType()->isRevisionable() && $entity->isNewRevision()) {
+        // Set revision creation time to the current time because
+        // revisions will reuse the previous revision's timestamp if not set.
+        $time = new \DateTimeImmutable();
+        $entity->setRevisionCreationTime($time->getTimestamp());
+      }
       $entity->save();
       return TRUE;
     }
