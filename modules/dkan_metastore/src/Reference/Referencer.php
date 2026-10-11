@@ -94,18 +94,20 @@ class Referencer {
    *
    * @param object $data
    *   Dataset json object.
+    * @param bool|null $createNewResourceVersion
+    *   Explicit new-version decision. NULL uses legacy static fallback.
    *
    * @return object
    *   Json object modified with references to some of its properties' values.
    */
-  public function reference($data) {
+  public function reference($data, ?bool $createNewResourceVersion = NULL) {
     if (!is_object($data)) {
       throw new \Exception('data must be an object.');
     }
     // Cycle through the dataset properties we seek to reference.
     foreach ($this->getPropertyList() as $property_id) {
       if (isset($data->{$property_id})) {
-        $data->{$property_id} = $this->referenceProperty($property_id, $data->{$property_id});
+        $data->{$property_id} = $this->referenceProperty($property_id, $data->{$property_id}, $createNewResourceVersion);
 
         // Remove de-referenced info from metadata.
         unset($data->{'%Ref:' . $property_id});
@@ -121,17 +123,19 @@ class Referencer {
    *   The dataset property id.
    * @param mixed $data
    *   Single value or array of values to be referenced.
+    * @param bool|null $createNewResourceVersion
+    *   Explicit new-version decision. NULL uses legacy static fallback.
    *
    * @return string|array
    *   Single reference, or an array of references.
    */
-  protected function referenceProperty(string $property_id, mixed $data) {
+  protected function referenceProperty(string $property_id, mixed $data, ?bool $createNewResourceVersion = NULL) {
     if (is_array($data)) {
-      return $this->referenceMultiple($property_id, $data);
+      return $this->referenceMultiple($property_id, $data, $createNewResourceVersion);
     }
     else {
       // Case for $data being an object or a string.
-      return $this->referenceSingle($property_id, $data);
+      return $this->referenceSingle($property_id, $data, $createNewResourceVersion);
     }
   }
 
@@ -142,14 +146,16 @@ class Referencer {
    *   The dataset property id.
    * @param array $values
    *   The array of values to be referenced.
+    * @param bool|null $createNewResourceVersion
+    *   Explicit new-version decision. NULL uses legacy static fallback.
    *
    * @return array
    *   The array of uuid references.
    */
-  protected function referenceMultiple(string $property_id, array $values) : array {
+  protected function referenceMultiple(string $property_id, array $values, ?bool $createNewResourceVersion = NULL) : array {
     $result = [];
     foreach ($values as $value) {
-      $data = $this->referenceSingle($property_id, $value);
+      $data = $this->referenceSingle($property_id, $value, $createNewResourceVersion);
       if (NULL !== $data) {
         $result[] = $data;
       }
@@ -164,13 +170,15 @@ class Referencer {
    *   The dataset property id.
    * @param string|object $value
    *   The value to be referenced.
+    * @param bool|null $createNewResourceVersion
+    *   Explicit new-version decision. NULL uses legacy static fallback.
    *
    * @return string|null
    *   The Uuid reference, or NULL on failure.
    */
-  protected function referenceSingle(string $property_id, $value) {
+  protected function referenceSingle(string $property_id, $value, ?bool $createNewResourceVersion = NULL) {
     if ($property_id == 'distribution') {
-      $value = $this->distributionHandling($value);
+      $value = $this->distributionHandling($value, $createNewResourceVersion);
     }
 
     $uuid = $this->checkExistingReference($property_id, $value);
@@ -199,11 +207,13 @@ class Referencer {
    *
    * @param object $distribution
    *   A dataset distribution object.
+  * @param bool|null $createNewResourceVersion
+  *   Explicit new-version decision. NULL uses legacy static fallback.
    *
    * @return object
    *   The supplied distribution with an updated resource download URL.
    */
-  public function distributionHandling($distribution): object {
+  public function distributionHandling($distribution, ?bool $createNewResourceVersion = NULL): object {
     // Ensure the supplied distribution has a valid resource before attempting
     // to register it with the resource mapper.
     if (isset($distribution->downloadURL)) {
@@ -211,7 +221,10 @@ class Referencer {
       // replace the download URL with a unique ID registered in the resource
       // mapper.
       $distribution->downloadURL = $this->registerWithResourceMapper(
-        UrlHostTokenResolver::hostify($distribution->downloadURL), $this->getMimeType($distribution));
+        UrlHostTokenResolver::hostify($distribution->downloadURL),
+        $this->getMimeType($distribution),
+        $createNewResourceVersion
+      );
     }
 
     // If there is a describedBy value, convert to dkan:// URL if appropriate.
@@ -254,11 +267,13 @@ class Referencer {
    *   The download URL for the resource being registered.
    * @param string $mimeType
    *   The mime type for the resource being registered.
+  * @param bool|null $createNewResourceVersion
+  *   Explicit new-version decision. NULL uses legacy static fallback.
    *
    * @return string
    *   A unique ID for the resource generated using the supplied details.
    */
-  protected function registerWithResourceMapper(string $downloadUrl, string $mimeType): string {
+  protected function registerWithResourceMapper(string $downloadUrl, string $mimeType, ?bool $createNewResourceVersion = NULL): string {
     try {
       // Create a new resource using the supplied resource details.
       $resource = new DataResource($downloadUrl, $mimeType);
@@ -280,7 +295,7 @@ class Referencer {
           $entity->get('identifier')->getString(),
           DataResource::DEFAULT_SOURCE_PERSPECTIVE
         );
-        $downloadUrl = $this->handleExistingResource($stored, $mimeType);
+        $downloadUrl = $this->handleExistingResource($stored, $mimeType, $createNewResourceVersion);
       }
     }
     return $downloadUrl;
@@ -293,14 +308,21 @@ class Referencer {
    *   Existing data resource object.
    * @param string $mimeType
    *   MIME type.
+  * @param bool|null $createNewResourceVersion
+  *   Explicit new-version decision. NULL uses legacy static fallback.
    *
    * @return string
    *   The download URL.
    */
-  protected function handleExistingResource(DataResource $existing, string $mimeType): string {
+  protected function handleExistingResource(DataResource $existing, string $mimeType, ?bool $createNewResourceVersion = NULL): string {
+    $should_create_new_version = $createNewResourceVersion;
+    if (is_null($should_create_new_version)) {
+      $should_create_new_version = ResourceMapper::newRevision() == 1;
+    }
+
     if (
       $existing->getPerspective() == DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
-      (ResourceMapper::newRevision() == 1 || $existing->getMimeType() != $mimeType)
+      ($should_create_new_version || $existing->getMimeType() != $mimeType)
     ) {
       $new = $existing->createNewVersion();
       // Update the MIME type, since this may be updated by the user.
