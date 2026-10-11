@@ -2,8 +2,12 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Form;
 
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\DependencyInjection\Container;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Pager\Pager;
 use Drupal\Core\Pager\PagerManagerInterface;
@@ -11,27 +15,23 @@ use Drupal\Core\Path\PathValidator;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StringTranslation\TranslationManager;
-use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
+use Drupal\dkan_common\DataResource;
 use Drupal\dkan_common\DatasetInfo;
-use Drupal\Core\Database\Connection;
 use Drupal\dkan_datastore\Form\DashboardForm;
+use Drupal\dkan_datastore\PostImportResult;
+use Drupal\dkan_datastore\PostImportResultFactory;
 use Drupal\dkan_datastore\Service\PostImport;
 use Drupal\dkan_harvest\Entity\HarvestRunRepository;
 use Drupal\dkan_harvest\HarvestService;
 use Drupal\dkan_metastore\MetastoreService;
+use Drupal\dkan_metastore\ResourceMapper;
+use Drupal\node\NodeInterface;
+use Drupal\Tests\dkan_metastore\Unit\MetastoreServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Drupal\dkan_metastore\ResourceMapper;
-use Drupal\dkan_datastore\PostImportResult;
-use Drupal\dkan_datastore\PostImportResultFactory;
-use Drupal\dkan_common\DataResource;
-use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Entity\Query\QueryInterface;
-use Drupal\node\NodeInterface;
 
 /**
  * @group dkan
@@ -110,6 +110,7 @@ class DashboardFormTest extends TestCase {
       'moderation_state' => 'published',
       'modified_date_metadata' => '2020-01-15',
       'modified_date_dkan' => '2021-02-11',
+      'node_id' => 1,
     ];
     $distribution = [
       'distribution_uuid' => 'dist-1',
@@ -154,6 +155,7 @@ class DashboardFormTest extends TestCase {
     $this->assertEquals('NEW', $form['table']['#rows'][0][2]['data']);
     $this->assertEquals('done', $form['table']['#rows'][0][6]['data']['#status']);
     $this->assertEquals(NULL, $form['table']['#rows'][0][6]['data']['#error']);
+    $this->assertEquals(1, $form['table']['#rows'][0][0]['data']['#node_id']);
   }
 
   /**
@@ -167,6 +169,7 @@ class DashboardFormTest extends TestCase {
       'moderation_state' => 'published',
       'modified_date_metadata' => '2020-01-15',
       'modified_date_dkan' => '2021-02-11',
+      'node_id' => 2,
     ];
     $distribution = [
       'distribution_uuid' => 'dist-1',
@@ -222,6 +225,7 @@ class DashboardFormTest extends TestCase {
     $this->assertEquals('NEW', $form['table']['#rows'][0][2]['data']);
     $this->assertEquals('done', $form['table']['#rows'][0][6]['data']['#status']);
     $this->assertEquals(NULL, $form['table']['#rows'][0][6]['data']['#error']);
+    $this->assertEquals(2, $form['table']['#rows'][0][0]['data']['#node_id']);
   }
 
   /**
@@ -235,6 +239,7 @@ class DashboardFormTest extends TestCase {
       'moderation_state' => 'published',
       'modified_date_metadata' => '2020-01-15',
       'modified_date_dkan' => '2021-02-11',
+      'node_id' => 3,
     ];
     $distribution = [
       'distribution_uuid' => 'dist-1',
@@ -295,6 +300,7 @@ class DashboardFormTest extends TestCase {
         'title' => 'Dataset 1',
         'modified_date_metadata' => '2019-08-12',
         'modified_date_dkan' => '2021-07-08',
+        'node_id' => 3,
         'distributions' => [
           [
             'distribution_uuid' => 'dist-1',
@@ -320,6 +326,7 @@ class DashboardFormTest extends TestCase {
         'title' => 'Non-Harvest Dataset',
         'modified_date_metadata' => '2019-08-12',
         'modified_date_dkan' => '2021-07-08',
+        'node_id' => 3,
         'distributions' => [
           [
             'distribution_uuid' => 'dist-2',
@@ -395,6 +402,7 @@ class DashboardFormTest extends TestCase {
         'modified_date_metadata' => '2019-08-12',
         'modified_date_dkan' => '2021-07-08',
         'distributions' => ['Not found'],
+        'node_id' => 1,
       ],
     ];
 
@@ -421,6 +429,7 @@ class DashboardFormTest extends TestCase {
         'title' => 'Dataset 1',
         'modified_date_metadata' => '2019-08-12',
         'modified_date_dkan' => '2021-07-08',
+        'node_id' => 5,
         'distributions' => [
           [
             'distribution_uuid' => 'dist-1',
@@ -510,6 +519,7 @@ class DashboardFormTest extends TestCase {
     $this->assertEquals('done', $form["table"]["#rows"][1][3]["data"]["#status"]);
     // The second row post import class is correct.
     $this->assertEquals('done', $form["table"]["#rows"][1][3]["class"][0]);
+    $this->assertEquals(5, $form['table']['#rows'][0][0]['data']['#node_id']);
   }
 
   /**
@@ -524,6 +534,7 @@ class DashboardFormTest extends TestCase {
         'title' => 'Dataset 1',
         'modified_date_metadata' => '2019-08-12',
         'modified_date_dkan' => '2021-07-08',
+        'node_id' => 7,
         'distributions' => [
           [
             'distribution_uuid' => 'dist-1',
