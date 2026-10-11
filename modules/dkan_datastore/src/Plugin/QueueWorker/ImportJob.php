@@ -128,6 +128,12 @@ class ImportJob extends AbstractPersistentJob {
    *   Column name on single line.
    */
   public static function sanitizeDescription(string $column) {
+    // Remove any UTF-8 Byte Order Marks from the content.
+    $boms = [
+      pack('H*', 'EFBBBF')
+    ];
+    $column = str_replace($boms, '', $column);
+
     $trimmed = array_filter(array_map('trim', explode("\n", $column)));
     return implode(" ", $trimmed);
   }
