@@ -12,6 +12,7 @@ use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\StreamedJsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Drupal\Core\Datetime\DrupalDateTime;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 /**
@@ -98,7 +99,9 @@ class QueryDownloadController extends AbstractQueryController {
    *   Return the StreamedResponse object.
    */
   protected function streamCsvResponse(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
-    $response = $this->initStreamedCsvResponse();
+    $date = new DrupalDateTime();
+    $filename = 'data-' . $date->format('m-d-Y_g:ia', NULL) . '.csv';
+    $response = $this->initStreamedCsvResponse($filename);
 
     $response->setCallback(function () use ($result, $datastoreQuery) {
       // Open the stream and send the header.
