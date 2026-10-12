@@ -21,14 +21,14 @@ class UseLocalWithPrepareLocalizeTest extends KernelTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
+    'content_moderation',
+    'workflows',
     'node',
     'user',
     'dkan_common',
     'dkan_datastore',
     'dkan_metastore',
   ];
-
-  protected $defaultTheme = 'stark';
 
   protected const SOURCE_URL = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
 

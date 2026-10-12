@@ -19,6 +19,7 @@ class ReferencerTest extends KernelTestBase {
   protected $strictConfigSchema = FALSE;
 
   protected static $modules = [
+    'content_moderation',
     'dkan_common',
     'dkan_metastore',
   ];

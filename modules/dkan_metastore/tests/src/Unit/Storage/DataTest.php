@@ -10,6 +10,7 @@ use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\dkan_metastore\ContentModeration\ContentModerationHelper;
 use Drupal\dkan_metastore\Storage\NodeData;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorage;
@@ -50,7 +51,14 @@ class DataTest extends TestCase {
       ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
       ->getMock();
 
-    $data = new NodeData('dataset', $this->getEtmChain()->getMock(), $configFactoryMock, $this->createStub(FileSystemInterface::class), $this->createStub(LoggerInterface::class));
+    $data = new NodeData(
+      'dataset',
+      $this->getEtmChain()->getMock(),
+      $configFactoryMock,
+      $this->createStub(FileSystemInterface::class),
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(ContentModerationHelper::class),
+    );
     $this->assertInstanceOf(NodeStorage::class, $data->getEntityStorage());
   }
 
@@ -67,7 +75,14 @@ class DataTest extends TestCase {
       ->getMock();
 
     $this->expectExceptionMessage('Error: 1 not found.');
-    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock, $this->createStub(FileSystemInterface::class), $this->createStub(LoggerInterface::class));
+    $nodeData = new NodeData(
+      'dataset',
+      $etmMock,
+      $configFactoryMock,
+      $this->createStub(FileSystemInterface::class),
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(ContentModerationHelper::class),
+    );
     $nodeData->publish('1');
   }
 
@@ -87,7 +102,14 @@ class DataTest extends TestCase {
       ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
       ->getMock();
 
-    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock, $this->createStub(FileSystemInterface::class), $this->createStub(LoggerInterface::class));
+    $nodeData = new NodeData(
+      'dataset',
+      $etmMock,
+      $configFactoryMock,
+      $this->createStub(FileSystemInterface::class),
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(ContentModerationHelper::class),
+    );
     $result = $nodeData->publish('1');
     $this->assertEquals(TRUE, $result);
   }
@@ -142,7 +164,14 @@ class DataTest extends TestCase {
       ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
       ->getMock();
 
-    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock, $this->createStub(FileSystemInterface::class), $this->createStub(LoggerInterface::class));
+    $nodeData = new NodeData(
+      'dataset',
+      $etmMock,
+      $configFactoryMock,
+      $this->createStub(FileSystemInterface::class),
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(ContentModerationHelper::class),
+    );
     $result = $nodeData->publish('1');
     $this->assertEquals(FALSE, $result);
   }
@@ -181,7 +210,14 @@ class DataTest extends TestCase {
       ->willReturn('/tmp');
 
     // Create Data object.
-    return new NodeData('dataset', $etmMock, $configFactoryMock, $fileSystemStub, $this->createStub(LoggerInterface::class));
+    return new NodeData(
+      'dataset',
+      $etmMock,
+      $configFactoryMock,
+      $fileSystemStub,
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(ContentModerationHelper::class),
+    );
   }
 
   /**
@@ -205,7 +241,14 @@ class DataTest extends TestCase {
       ->getMock();
 
     // Create Data object.
-    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock, $this->createStub(FileSystemInterface::class), $this->createStub(LoggerInterface::class));
+    $nodeData = new NodeData(
+      'dataset',
+      $etmMock,
+      $configFactoryMock,
+      $this->createStub(FileSystemInterface::class),
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(ContentModerationHelper::class),
+    );
     // Ensure count matches return value.
     $this->assertEquals($count, $nodeData->count());
   }
@@ -242,7 +285,13 @@ class DataTest extends TestCase {
       ->getMock();
 
     // Create Data object.
-    $nodeData = new NodeData('dataset', $etmMock, $configFactoryMock, $this->createStub(FileSystemInterface::class), $this->createStub(LoggerInterface::class));
+    $nodeData = new NodeData(
+      'dataset',
+      $etmMock, $configFactoryMock,
+      $this->createStub(FileSystemInterface::class),
+      $this->createStub(LoggerInterface::class),
+      $this->createStub(ContentModerationHelper::class),
+    );
     // Ensure the returned uuids match those belonging to the generated nodes.
     $this->assertEquals($uuids, $nodeData->retrieveIds(1, 5));
   }

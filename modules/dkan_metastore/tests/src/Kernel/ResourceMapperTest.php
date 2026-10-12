@@ -17,8 +17,10 @@ use Drupal\KernelTests\KernelTestBase;
 class ResourceMapperTest extends KernelTestBase {
 
   protected static $modules = [
+    'content_moderation',
     'dkan_common',
     'dkan_metastore',
+    'workflows',
   ];
 
   protected function setUp() : void {

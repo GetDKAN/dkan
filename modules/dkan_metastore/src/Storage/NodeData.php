@@ -5,12 +5,19 @@ namespace Drupal\dkan_metastore\Storage;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\dkan_metastore\ContentModeration\ContentModerationHelper;
 use Psr\Log\LoggerInterface;
 
 /**
  * Node Data.
  */
 class NodeData extends Data {
+
+  public const ENTITY_TYPE = 'node';
+
+  public const BUNDLE = 'data';
+
+  public const BUNDLE_KEY = 'type';
 
   /**
    * NodeData constructor.
@@ -21,14 +28,15 @@ class NodeData extends Data {
     ConfigFactoryInterface $config_factory,
     FileSystemInterface $file_system,
     LoggerInterface $loggerChannel,
+    ContentModerationHelper $contentModerationHelper,
   ) {
-    $this->entityType = 'node';
-    $this->bundle = 'data';
-    $this->bundleKey = 'type';
+    $this->entityType = self::ENTITY_TYPE;
+    $this->bundle = self::BUNDLE;
+    $this->bundleKey = self::BUNDLE_KEY;
     $this->labelKey = 'title';
     $this->schemaIdField = 'field_data_type';
     $this->metadataField = 'field_json_metadata';
-    parent::__construct($schemaId, $entityTypeManager, $config_factory, $file_system, $loggerChannel);
+    parent::__construct($schemaId, $entityTypeManager, $config_factory, $file_system, $loggerChannel, $contentModerationHelper);
   }
 
   /**
@@ -52,7 +60,7 @@ class NodeData extends Data {
    *
    * @param string $hash
    *   The hash for the data.
-   * @param string $schema_id
+   * @param string $schemaId
    *   The schema ID.
    *
    * @return string|null
@@ -61,10 +69,10 @@ class NodeData extends Data {
    * @todo This method is not consistent with others in this class, and
    * may not be needed at all. Fix or remove.
    */
-  public function retrieveByHash($hash, $schema_id) {
+  public function retrieveByHash($hash, $schemaId) {
     $nodes = $this->getEntityStorage()->loadByProperties([
       $this->labelKey => $hash,
-      $this->schemaIdField => $schema_id,
+      $this->schemaIdField => $schemaId,
     ]);
     if ($node = reset($nodes)) {
       return $node->uuid();

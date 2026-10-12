@@ -25,9 +25,11 @@ class HarvestCommandsTest extends KernelTestBase {
    * {@inheritDoc}
    */
   protected static $modules = [
+    'content_moderation',
     'dkan_common',
     'dkan_harvest',
     'dkan_metastore',
+    'workflows',
   ];
 
   /**

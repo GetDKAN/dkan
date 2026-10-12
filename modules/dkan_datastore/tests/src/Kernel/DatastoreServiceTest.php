@@ -18,12 +18,12 @@ use Drupal\dkan_datastore\Service\ResourceLocalizer;
  */
 class DatastoreServiceTest extends KernelTestBase {
 
-  protected $strictConfigSchema = FALSE;
-
   protected static $modules = [
+    'content_moderation',
     'dkan_common',
     'dkan_datastore',
     'dkan_metastore',
+    'workflows',
   ];
 
   /**

@@ -458,10 +458,19 @@ class MetastoreService implements ContainerInjectionInterface {
    */
   public function getCatalog() {
     $catalog = $this->getSchema('catalog');
+
+    // @todo Do we really need to do this round-trip of JSON metadata strings
+    //   to objects, to dereference, to string?
+    $jsonStringsArray = $this->storageFactory->getInstance('dataset')
+      ->retrieveAllForCatalog();
+    $objects = array_filter(
+      $this->jsonStringsArrayToObjects($jsonStringsArray, 'dataset')
+    );
+
     $catalog->dataset = array_map(function ($object) {
       $modified_object = static::removeReferences($object);
       return (object) $modified_object->get('$');
-    }, $this->getAll('dataset'));
+    }, $objects);
 
     return $catalog;
   }
