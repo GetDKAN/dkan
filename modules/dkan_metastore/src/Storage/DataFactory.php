@@ -6,6 +6,7 @@ use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\dkan_metastore\ContentModeration\ContentModerationHelper;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -47,6 +48,13 @@ class DataFactory implements FactoryInterface {
   private LoggerInterface $logger;
 
   /**
+   * Content moderation helper service.
+   *
+   * @var \Drupal\dkan_metastore\ContentModeration\ContentModerationHelper
+   */
+  private ContentModerationHelper $contentModerationHelper;
+
+  /**
    * Constructor.
    */
   public function __construct(
@@ -54,11 +62,13 @@ class DataFactory implements FactoryInterface {
     ConfigFactoryInterface $config_factory,
     FileSystemInterface $file_system,
     LoggerInterface $loggerChannel,
+    ContentModerationHelper $contentModerationHelper,
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->configFactory = $config_factory;
     $this->fileSystem = $file_system;
     $this->logger = $loggerChannel;
+    $this->contentModerationHelper = $contentModerationHelper;
   }
 
   /**
@@ -111,7 +121,8 @@ class DataFactory implements FactoryInterface {
       $this->entityTypeManager,
       $this->configFactory,
       $this->fileSystem,
-      $this->logger
+      $this->logger,
+      $this->contentModerationHelper,
     );
   }
 

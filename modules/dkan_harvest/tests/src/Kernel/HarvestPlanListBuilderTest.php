@@ -28,11 +28,13 @@ class HarvestPlanListBuilderTest extends KernelTestBase {
   ];
 
   protected static $modules = [
+    'content_moderation',
     'dkan_common',
     'dkan_harvest',
     'dkan_metastore',
     'node',
     'user',
+    'workflows',
   ];
 
   protected function setUp() : void {
